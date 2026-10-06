@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1769e0">
+  <title>Game API Mail</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">G</span><span>Game API Mail</span></div>
+    <button id="logoutBtn" class="ghost">Sign out</button>
+  </header>
+  <main class="layout">
+    <aside class="sidebar">
+      <button id="composeBtn" class="compose">Compose</button>
+      <nav>
+        <button class="nav-item active" data-folder="INBOX">Inbox <span id="inboxCount"></span></button>
+        <button class="nav-item" data-folder="STARRED">Starred</button>
+        <button class="nav-item" data-folder="SENT">Sent</button>
+        <button class="nav-item" data-folder="DRAFTS">Drafts</button>
+        <button class="nav-item" data-folder="TRASH">Trash</button>
+      </nav>
+    </aside>
+    <section class="mail-area">
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="Search mail">
+        <button id="refreshBtn" class="ghost">Refresh</button>
+      </div>
+      <div id="status" class="status"></div>
+      <div id="mailList" class="mail-list"></div>
+    </section>
+  </main>
+  <dialog id="composeDialog">
+    <form id="composeForm" method="dialog" class="compose-card">
+      <div class="dialog-head"><h2>New message</h2><button type="button" id="closeCompose" class="icon">×</button></div>
+      <input id="toInput" type="email" placeholder="To" required>
+      <input id="subjectInput" type="text" placeholder="Subject">
+      <textarea id="bodyInput" placeholder="Write your message..." required></textarea>
+      <div class="compose-actions"><button type="button" id="saveDraftBtn" class="ghost">Save draft</button><button type="submit" class="send">Send</button></div>
+    </form>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
