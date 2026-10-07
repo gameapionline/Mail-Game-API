@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8fafd">
+<meta name="description" content="Sign in or create your Game API Mail account.">
+<title>Game API Mail — Sign in</title>
+<link rel="stylesheet" href="./css/auth.css">
+</head>
+<body>
+<div class="auth-shell">
+  <header class="auth-top">
+    <a class="brand" href="./index.html" aria-label="Game API Mail home">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11Z"/><path d="m5 7 7 5 7-5"/></svg></span>
+      <span>Game API <strong>Mail</strong></span>
+    </a>
+  </header>
+
+  <main class="auth-main">
+    <section class="auth-card" aria-live="polite">
+      <div class="auth-logo"><svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11Z"/><path d="m5 7 7 5 7-5"/></svg></div>
+
+      <div id="loginView">
+        <h1>Sign in</h1>
+        <p class="subtitle">to continue to Game API Mail</p>
+        <form id="loginForm" novalidate>
+          <label class="field">
+            <span>Email</span>
+            <input id="loginEmail" type="email" autocomplete="email" placeholder="Email" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <div class="password-wrap">
+              <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password" required>
+              <button type="button" class="password-toggle" data-target="loginPassword" aria-label="Show password">
+                <svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+              </button>
+            </div>
+          </label>
+          <div class="form-links"><button type="button" class="text-button" id="forgotPassword">Forgot password?</button></div>
+          <button class="primary-btn" id="loginSubmit" type="submit">Sign in</button>
+        </form>
+        <div class="divider"><span>or</span></div>
+        <button class="google-btn" id="googleLogin" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.35 12.27c0-.72-.06-1.25-.2-1.82H12v3.45h5.37a4.58 4.58 0 0 1-1.99 3.01v2.51h3.23c1.89-1.74 2.74-4.3 2.74-7.15Z"/><path d="M12 21.5c2.7 0 4.96-.89 6.61-2.41l-3.23-2.51c-.89.6-2.02 1.02-3.38 1.02-2.6 0-4.81-1.75-5.6-4.1H3.06v2.59A9.99 9.99 0 0 0 12 21.5Z"/><path d="M6.4 13.5A6 6 0 0 1 6.4 10.5V7.91H3.06a10 10 0 0 0 0 8.18L6.4 13.5Z"/><path d="M12 5.92c1.47 0 2.79.5 3.83 1.48l2.87-2.87C16.95 2.94 14.7 2 12 2a9.99 9.99 0 0 0-8.94 5.91L6.4 10.5c.79-2.35 3-4.58 5.6-4.58Z"/></svg>
+          Continue with Google
+        </button>
+        <p class="switch-text">Don't have an account? <button id="showSignup" class="text-button strong">Create account</button></p>
+      </div>
+
+      <div id="signupView" hidden>
+        <button class="back-button" id="backToLogin" type="button"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> Back</button>
+        <h1>Create your account</h1>
+        <p class="subtitle">Join Game API Mail</p>
+        <form id="signupForm" novalidate>
+          <div class="name-grid">
+            <label class="field"><span>First name</span><input id="signupFirstName" type="text" autocomplete="given-name" placeholder="First name" required></label>
+            <label class="field"><span>Last name</span><input id="signupLastName" type="text" autocomplete="family-name" placeholder="Last name" required></label>
+          </div>
+          <label class="field"><span>Email</span><input id="signupEmail" type="email" autocomplete="email" placeholder="Email" required></label>
+          <label class="field"><span>Password</span>
+            <div class="password-wrap"><input id="signupPassword" type="password" autocomplete="new-password" placeholder="Create a password" required><button type="button" class="password-toggle" data-target="signupPassword" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
+          </label>
+          <div class="strength"><div class="strength-track"><i id="strengthBar"></i></div><span id="strengthText">Use 8+ characters</span></div>
+          <label class="field"><span>Confirm password</span>
+            <div class="password-wrap"><input id="signupConfirm" type="password" autocomplete="new-password" placeholder="Confirm password" required><button type="button" class="password-toggle" data-target="signupConfirm" aria-label="Show password"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></button></div>
+          </label>
+          <p class="terms">By creating an account, you agree to use Game API Mail responsibly and keep your account secure.</p>
+          <button class="primary-btn" id="signupSubmit" type="submit">Create account</button>
+        </form>
+        <div class="divider"><span>or</span></div>
+        <button class="google-btn" id="googleSignup" type="button"><svg viewBox="0 0 24 24"><path d="M21.35 12.27c0-.72-.06-1.25-.2-1.82H12v3.45h5.37a4.58 4.58 0 0 1-1.99 3.01v2.51h3.23c1.89-1.74 2.74-4.3 2.74-7.15Z"/><path d="M12 21.5c2.7 0 4.96-.89 6.61-2.41l-3.23-2.51c-.89.6-2.02 1.02-3.38 1.02-2.6 0-4.81-1.75-5.6-4.1H3.06v2.59A9.99 9.99 0 0 0 12 21.5Z"/><path d="M6.4 13.5A6 6 0 0 1 6.4 10.5V7.91H3.06a10 10 0 0 0 0 8.18L6.4 13.5Z"/><path d="M12 5.92c1.47 0 2.79.5 3.83 1.48l2.87-2.87C16.95 2.94 14.7 2 12 2a9.99 9.99 0 0 0-8.94 5.91L6.4 10.5c.79-2.35 3-4.58 5.6-4.58Z"/></svg> Continue with Google</button>
+        <p class="switch-text">Already have an account? <button id="showLogin" class="text-button strong">Sign in</button></p>
+      </div>
+
+      <div id="messageBox" class="message" role="alert" hidden><span id="messageIcon"></span><p id="messageText"></p><button id="closeMessage" type="button" aria-label="Close">×</button></div>
+      <div id="loading" class="loading" hidden><span></span> Please wait…</div>
+    </section>
+    <p class="legal">Game API Mail · <a href="./index.html">Home</a> · <a href="mailto:mail@game-api.online">Support</a></p>
+  </main>
+</div>
+<script type="module" src="./js/auth.js"></script>
+</body>
+</html>
