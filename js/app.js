@@ -116,7 +116,34 @@ function renderMessages(){
   $("mailList").innerHTML=messages.map(m=>`<article class="mail-row ${m.is_read?"":"unread"}" data-message="${escapeHtml(m.id)}"><input type="checkbox" class="message-check" data-select="${escapeHtml(m.id)}" aria-label="Select message"><button class="star ${m.is_starred?"starred":""}" data-star="${escapeHtml(m.id)}" aria-label="Toggle star">${m.is_starred?"★":"☆"}</button><div class="sender">${escapeHtml(m.sender_name||m.sender_email||"Unknown sender")}</div><div class="subject">${escapeHtml(m.subject||"(No subject)")}</div><div class="date">${m.received_at?escapeHtml(new Date(m.received_at).toLocaleDateString()):""}</div></article>`).join("");
   $("mailList").querySelectorAll("[data-select]").forEach(el=>el.onchange=()=>{el.checked?selectedIds.add(el.dataset.select):selectedIds.delete(el.dataset.select);updateSelectionUi()});
   $("mailList").querySelectorAll("[data-star]").forEach(el=>el.onclick=async e=>{e.stopPropagation();await messageAction("star",{id:el.dataset.star,is_starred:!allMessages.find(m=>String(m.id)===el.dataset.star)?.is_starred})});
-  $("mailList").querySelectorAll("[data-message]").forEach(el=>el.onclick=e=>{if(e.target.closest("button,input"))return;toast("Message reading will be available when the mail backend supports message details.")});
+  $("mailList").querySelectorAll("[data-message]").forEach(el=>el.onclick=async e=>{if(e.target.closest("button,input"))return;await openMessage(el.dataset.message)});
+}
+async function openMessage(id){
+  try{
+    setStatus("Opening message…");
+    const res=await fetch(APP_CONFIG.API_BASE_URL+"/api/mail/"+encodeURIComponent(id),{headers:await authHeaders()});
+    if(res.status===401){await supabase.auth.signOut();location.replace("./auth.html");return}
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data?.error||"Message could not be opened.");
+    const m=data.message;
+    const body=String(m?.body_text||m?.preview||"");
+    const sender=escapeHtml(m?.sender_name||m?.sender_email||"Unknown sender");
+    const email=escapeHtml(m?.sender_email||"");
+    const subject=escapeHtml(m?.subject||"(No subject)");
+    const date=m?.received_at?new Date(m.received_at).toLocaleString():"";
+    const dialog=$("messageDialog");
+    if(dialog){
+      const title=$("messageDialogTitle"),meta=$("messageDialogMeta"),content=$("messageDialogBody");
+      if(title)title.innerHTML=subject;
+      if(meta)meta.innerHTML=sender+(email?" &lt;"+email+"&gt;":"")+(date?" · "+escapeHtml(date):"");
+      if(content)content.textContent=body;
+      dialog.showModal();
+    }else{
+      toast(body?body.slice(0,180):"Message opened.");
+    }
+    await loadMail(currentFolder);
+  }catch(error){console.error(error);toast(error.message||"Could not open this message.");}
+  finally{setStatus("");}
 }
 function updateSelectionUi(){
   $("markReadBtn").disabled=selectedIds.size===0;
