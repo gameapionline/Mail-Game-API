@@ -61,9 +61,13 @@ function updateStrength(){
 }
 async function routeAfterAuth(){
   const {data:{user}}=await supabase.auth.getUser();
-  if(!user)return;
+  if(!user){
+    setLoading(false);
+    return;
+  }
   const {data:profile,error}=await supabase.from("profiles").select("profile_completed").eq("id",user.id).maybeSingle();
   if(error){
+    setLoading(false);
     showMessage("Signed in, but we could not check your account setup. Please try again.");
     return;
   }
