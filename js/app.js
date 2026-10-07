@@ -133,11 +133,9 @@ async function messageAction(action,payload){
   }catch{toast("This action will work when the mail backend endpoint is connected.")}
 }
 function openCompose(){$("composeDialog").showModal();$("toInput").focus()}
-$("composeBtn").onclick=openCompose;
 $("closeCompose").onclick=()=>$("composeDialog").close();
 $("refreshBtn").onclick=()=>loadMail(currentFolder);
 $("mobileMenu").onclick=()=>$("sidebar").classList.toggle("open");
-$("settingsBtn").onclick=()=>location.href="./setup.html";
 $("profileBtn").onclick=()=>location.href="./setup.html";
 $("helpBtn").onclick=()=>toast("Game API Mail help: account setup and profile are available from Settings & profile.");
 $("compactToggle").onclick=()=>document.body.classList.toggle("compact");
