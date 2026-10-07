@@ -9,7 +9,7 @@ async function init(){
   user=data.user;
   if(!user){ $("status").textContent="Please sign in."; return; }
   await loadMail("INBOX");
-  if("serviceWorker" in navigator) navigator.serviceWorker.register("../sw.js").catch(()=>{});
+  if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
 }
 async function loadMail(folder="INBOX"){
   $("status").textContent="Loading...";
@@ -34,7 +34,7 @@ function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":
 $("composeBtn").onclick=()=> $("composeDialog").showModal();
 $("closeCompose").onclick=()=> $("composeDialog").close();
 $("refreshBtn").onclick=()=>loadMail("INBOX");
-$("logoutBtn").onclick=async()=>{await supabase.auth.signOut();location.reload()};
+$("logoutBtn").onclick=async()=>{await supabase.auth.signOut();location.href="./index.html"};
 document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");loadMail(b.dataset.folder)});
 $("composeForm").onsubmit=async e=>{e.preventDefault();const h=await authHeaders();const r=await fetch(APP_CONFIG.API_BASE_URL+"/api/mail/send",{method:"POST",headers:{"Content-Type":"application/json",...h},body:JSON.stringify({to:$("toInput").value,subject:$("subjectInput").value,body:$("bodyInput").value})});$("status").textContent=r.ok?"Message sent.":"Message could not be sent.";if(r.ok){$("composeDialog").close();e.target.reset();}};
 init();
