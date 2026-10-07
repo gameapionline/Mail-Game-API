@@ -161,6 +161,19 @@ async function messageAction(action,payload){
 }
 function openCompose(){$("composeDialog").showModal();$("toInput").focus()}
 $("closeCompose").onclick=()=>$("composeDialog").close();
+$("closeMessageDialog").onclick=()=>{const d=$("messageDialog");if(d?.open)d.close()};
+$("closeMessageDialogBottom").onclick=()=>{const d=$("messageDialog");if(d?.open)d.close()};
+$("replyMessageBtn").onclick=()=>{
+  const subject=$("messageDialogTitle")?.textContent||"";
+  const meta=$("messageDialogMeta")?.textContent||"";
+  const match=meta.match(/<([^>]+)>/);
+  const sender=match?.[1]||"";
+  const d=$("messageDialog");if(d?.open)d.close();
+  openCompose();
+  if(sender)$("toInput").value=sender;
+  $("subjectInput").value=subject.startsWith("Re:")?subject:"Re: "+subject;
+  $("bodyInput").focus();
+};
 $("refreshBtn").onclick=()=>loadMail(currentFolder);
 $("mobileMenu").onclick=()=>$("sidebar").classList.toggle("open");
 $("profileBtn").onclick=()=>location.href="./setup.html";
