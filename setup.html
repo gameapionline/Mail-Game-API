@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06101d">
+<meta name="description" content="Finish setting up your Game API Mail account.">
+<title>Game API Mail — Set up your account</title>
+<link rel="stylesheet" href="./css/setup.css">
+</head>
+<body>
+<div class="setup-shell">
+  <header class="setup-top">
+    <a class="brand" href="./index.html" aria-label="Game API Mail home">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11Z"/><path d="m5 7 7 5 7-5"/></svg></span>
+      <span>Game API <strong>Mail</strong></span>
+    </a>
+    <button id="logoutBtn" class="logout-btn" type="button">Sign out</button>
+  </header>
+
+  <main class="setup-main">
+    <section class="setup-card">
+      <div class="welcome-icon"><svg viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <p class="eyebrow">One-time setup</p>
+      <h1>Set up your Game API Mail account</h1>
+      <p class="intro">A few details will personalize your mailbox. You can change most of these later in Settings.</p>
+
+      <div class="progress-wrap">
+        <div class="progress-head"><span id="stepLabel">Step 1 of 4</span><span id="progressPercent">25%</span></div>
+        <div class="progress-track"><i id="progressBar"></i></div>
+      </div>
+
+      <div id="messageBox" class="message" role="alert" hidden>
+        <span class="message-icon">!</span><p id="messageText"></p><button id="closeMessage" type="button" aria-label="Close">×</button>
+      </div>
+
+      <form id="setupForm" novalidate>
+        <section class="setup-step active" data-step="1">
+          <div class="step-title"><span>01</span><div><h2>Tell us about you</h2><p>This is how your name will appear inside Game API Mail.</p></div></div>
+          <div class="name-grid">
+            <label class="field"><span>First name</span><input id="firstName" type="text" autocomplete="given-name" required></label>
+            <label class="field"><span>Last name</span><input id="lastName" type="text" autocomplete="family-name" required></label>
+          </div>
+          <label class="field"><span>Display name</span><input id="displayName" type="text" autocomplete="name" placeholder="The name people should see" required></label>
+          <div class="account-email"><span>Account email</span><strong id="accountEmail">—</strong><small>This is your sign-in email and cannot be changed here.</small></div>
+        </section>
+
+        <section class="setup-step" data-step="2">
+          <div class="step-title"><span>02</span><div><h2>Contact & recovery</h2><p>These details help you recover and secure your account.</p></div></div>
+          <label class="field"><span>Phone number <em>Optional</em></span><input id="phone" type="tel" autocomplete="tel" placeholder="+234 800 000 0000"></label>
+          <label class="field"><span>Recovery email <em>Optional</em></span><input id="recoveryEmail" type="email" autocomplete="email" placeholder="Another email you can access"></label>
+          <label class="field"><span>Country</span>
+            <select id="country" autocomplete="country-name">
+              <option value="">Select your country</option>
+              <option value="NG">Nigeria</option><option value="GH">Ghana</option><option value="KE">Kenya</option><option value="ZA">South Africa</option>
+              <option value="GB">United Kingdom</option><option value="US">United States</option><option value="CA">Canada</option><option value="OTHER">Other</option>
+            </select>
+          </label>
+          <p class="privacy-note">We do not use your phone or recovery email as your Game API Mail address. They are account-recovery details.</p>
+        </section>
+
+        <section class="setup-step" data-step="3">
+          <div class="step-title"><span>03</span><div><h2>Choose your Game API address</h2><p>This will become the address people use to send mail to you.</p></div></div>
+          <label class="field"><span>Choose your username</span>
+            <div class="mail-input"><input id="mailUsername" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="yourname" maxlength="30" required><span>@game-api.online</span></div>
+          </label>
+          <div id="addressPreview" class="address-preview">yourname@game-api.online</div>
+          <ul class="rules">
+            <li>Use lowercase letters, numbers, dots, hyphens or underscores.</li>
+            <li>2–30 characters.</li>
+            <li>Your address must be available.</li>
+          </ul>
+          <p class="mail-note">Your chosen address is stored with your profile now. Actual Hostinger mailbox provisioning will be connected when the mail backend is deployed.</p>
+        </section>
+
+        <section class="setup-step" data-step="4">
+          <div class="step-title"><span>04</span><div><h2>Set your preferences</h2><p>Choose the defaults you want for your mailbox.</p></div></div>
+          <label class="field"><span>Language</span><select id="language"><option value="en">English</option><option value="fr">French</option><option value="es">Spanish</option><option value="ar">Arabic</option></select></label>
+          <label class="field"><span>Time zone</span><select id="timezone">
+            <option value="Africa/Lagos">West Africa Time — Lagos</option>
+            <option value="Africa/Accra">Greenwich Mean Time — Accra</option>
+            <option value="Europe/London">United Kingdom — London</option>
+            <option value="Europe/Paris">Central European Time — Paris</option>
+            <option value="America/New_York">Eastern Time — New York</option>
+            <option value="America/Los_Angeles">Pacific Time — Los Angeles</option>
+            <option value="Asia/Dubai">Gulf Standard Time — Dubai</option>
+            <option value="Asia/Kolkata">India Standard Time — Kolkata</option>
+          </select></label>
+          <div class="choice-group"><span class="choice-label">Appearance</span>
+            <label class="choice"><input type="radio" name="theme" value="dark" checked><span><b>Dark</b><small>Game API dark interface</small></span></label>
+            <label class="choice"><input type="radio" name="theme" value="light"><span><b>Light</b><small>Bright interface</small></span></label>
+            <label class="choice"><input type="radio" name="theme" value="system"><span><b>System</b><small>Follow your device</small></span></label>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button id="backBtn" class="secondary-btn" type="button" hidden>Back</button>
+          <button id="nextBtn" class="primary-btn" type="button">Continue</button>
+        </div>
+      </form>
+    </section>
+    <p class="footer-note">Game API Mail · Your information is stored securely in your account profile.</p>
+  </main>
+</div>
+<script type="module" src="./js/setup.js"></script>
+</body>
+</html>
