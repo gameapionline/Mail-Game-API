@@ -1,2 +1,0 @@
-self.addEventListener("push",event=>{let data={title:"Game API Mail",body:"You have a new message."};try{data=event.data.json()}catch{}event.waitUntil(self.registration.showNotification(data.title,{body:data.body,icon:"/icon-192.png",badge:"/icon-192.png",data:data}))});
-self.addEventListener("notificationclick",event=>{event.notification.close();event.waitUntil(clients.openWindow("/"))});
