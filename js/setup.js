@@ -1,4 +1,5 @@
 import { supabase } from "./supabase.js";
+import { APP_CONFIG } from "./config.js";
 
 const $=id=>document.getElementById(id);
 const steps=[...document.querySelectorAll(".setup-step")];
@@ -14,11 +15,11 @@ function clearMessage(){
   $("messageBox").hidden=true;
   $("messageText").textContent="";
 }
-function setBusy(on){
+function setBusy(on,label=null){
   $("nextBtn").disabled=on;
   $("backBtn").disabled=on;
   $("logoutBtn").disabled=on;
-  $("nextBtn").textContent=on?"Saving…":(currentStep===steps.length?"Finish setup":"Continue");
+  $("nextBtn").textContent=on?(label||"Saving…"):(currentStep===steps.length?"Finish setup":"Continue");
 }
 function normalizeUsername(value){
   return value.trim().toLowerCase().replace(/\s+/g,"");
@@ -76,6 +77,36 @@ async function saveProfile(values,complete=false){
   profile=data||{...profile,...values};
   return profile;
 }
+async function authHeaders(){
+  const {data,error}=await supabase.auth.getSession();
+  if(error) throw error;
+  const token=data.session?.access_token;
+  if(!token) throw new Error("Your login session has expired. Please sign in again.");
+  return {
+    Authorization:"Bearer "+token,
+    "Content-Type":"application/json"
+  };
+}
+async function provisionMailbox(){
+  const response=await fetch(APP_CONFIG.API_BASE_URL+"/api/mailbox/provision",{
+    method:"POST",
+    headers:await authHeaders(),
+    body:JSON.stringify({})
+  });
+
+  let body={};
+  try{body=await response.json()}catch{}
+
+  if(!response.ok){
+    const message=body?.error||body?.message||"We could not create your Game API Mail address.";
+    const error=new Error(message);
+    error.status=response.status;
+    error.code=body?.code||null;
+    throw error;
+  }
+
+  return body;
+}
 async function loadProfile(){
   const {data,error}=await supabase.from("profiles").select("*").eq("id",user.id).maybeSingle();
   if(error) throw error;
@@ -111,7 +142,28 @@ $("nextBtn").onclick=async()=>{
   try{
     const complete=currentStep===steps.length;
     await saveProfile(values,complete);
-    if(complete){location.replace("./app.html");return}
+
+    if(complete){
+      setBusy(true,"Creating mailbox…");
+      try{
+        const result=await provisionMailbox();
+        const mailbox=result?.mailbox;
+        if(mailbox?.email_address){
+          $("nextBtn").textContent="Mailbox created";
+        }
+      }catch(error){
+        console.error("Mailbox provisioning failed:",error);
+        await saveProfile({profile_completed:false},false);
+        throw new Error(
+          error.message||
+          "Your profile was saved, but we could not create your Game API Mail address yet."
+        );
+      }
+
+      location.replace("./app.html");
+      return;
+    }
+
     showStep(currentStep+1);
   }catch(error){
     showMessage(error.message||"We could not save your profile. Please try again.");
@@ -120,8 +172,9 @@ $("nextBtn").onclick=async()=>{
   }
 };
 const {data:{user:currentUser}}=await supabase.auth.getUser();
-if(!currentUser){location.replace("./auth.html");}
-else{
+if(!currentUser){
+  location.replace("./auth.html");
+}else{
   user=currentUser;
   try{
     await loadProfile();
