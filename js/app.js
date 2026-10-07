@@ -9,6 +9,30 @@ let allMessages=[];
 let selectedIds=new Set();
 let toastTimer=null;
 
+const SIDEBAR_ITEMS=[
+ {folder:"INBOX",label:"Inbox",className:"inbox",icon:`<svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 13h4l2 3h4l2-3h4"/></svg>`},
+ {folder:"STARRED",label:"Starred",className:"starred",icon:`<svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg>`},
+ {folder:"SENT",label:"Sent",className:"sent",icon:`<svg viewBox="0 0 24 24"><path d="m21 3-7.2 18-3.7-7.1L3 10.2 21 3Z"/><path d="M10.1 13.9 15 9"/></svg>`},
+ {folder:"DRAFTS",label:"Drafts",className:"drafts",icon:`<svg viewBox="0 0 24 24"><path d="M4 4h11l5 5v11H4z"/><path d="M14 4v6h6M8 15h8M8 18h6"/></svg>`},
+ {folder:"TRASH",label:"Trash",className:"trash",icon:`<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>`}
+];
+function renderSidebar(){
+ const root=$("sidebarContent"); if(!root)return;
+ const display=profile?.display_name||[profile?.first_name,profile?.last_name].filter(Boolean).join(" ")||user?.email?.split("@")[0]||"Account";
+ root.innerHTML=`<div class="sidebar-content">
+ <div class="sidebar-brandline"><div class="mini-mark"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></div><div><strong>Game API Mail</strong><span>PRIVATE MAIL WORKSPACE</span></div></div>
+ <button id="composeBtn" class="dynamic-compose"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Compose</button>
+ <div class="dynamic-section-title">MAILBOX</div><nav class="dynamic-nav">${SIDEBAR_ITEMS.map(x=>`<button class="dynamic-nav-item ${x.className}" data-folder="${x.folder}"><span class="nav-icon">${x.icon}</span><span class="nav-label">${x.label}</span><b class="nav-count" data-count-for="${x.folder}"></b></button>`).join("")}</nav>
+ <div class="dynamic-divider"></div>
+ <button id="settingsBtn" class="dynamic-nav-item settings"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.2 2-2 1.2-2.2-1.2a7 7 0 0 1-1.4.6L14.7 21h-2.8l-.4-2.6a7 7 0 0 1-1.4-.6l-2.2 1.2-2-2 1.2-2.2a7 7 0 0 1-.6-1.4L4 13v-2.8l2.6-.4a7 7 0 0 1 .6-1.4L6 6.2l2-2 2.2 1.2a7 7 0 0 1 1.4-.6L12 2h2.8l.4 2.6a7 7 0 0 1 1.4.6l2.2-1.2 2 2-1.2 2.2a7 7 0 0 1 .6 1.4l2.6.4v2.8l-2.6.4a7 7 0 0 1-.6 1.4Z"/></svg><span class="nav-label">Settings & profile</span></button>
+ <div class="dynamic-sidebar-bottom"><div class="dynamic-account-card"><div class="dynamic-account-head"><div class="dynamic-account-avatar">${initials(display)}</div><div class="dynamic-account-copy"><strong>${escapeHtml(display)}</strong><span>${escapeHtml(user?.email||"")}</span></div></div><div class="dynamic-status"><i></i> Account ready</div></div>
+ <div class="dynamic-storage"><div class="dynamic-storage-row"><span>Mailbox status</span><span id="connectionLabel">Ready</span></div><div class="dynamic-storage-track"><i></i></div></div><div class="dynamic-footer"><span>Game API Mail</span><span>v1</span></div></div></div>`;
+   root.querySelectorAll("[data-folder]").forEach(b=>b.onclick=()=>{ $("sidebar").classList.remove("open"); loadMail(b.dataset.folder); });
+ updateSidebarActive();
+}
+function updateSidebarActive(){document.querySelectorAll(".dynamic-nav-item[data-folder]").forEach(b=>b.classList.toggle("active",b.dataset.folder===currentFolder));}
+function updateSidebarCounts(){const unread=allMessages.filter(m=>!m.is_read).length;document.querySelectorAll("[data-count-for]").forEach(e=>e.textContent="");const e=document.querySelector('[data-count-for="INBOX"]');if(e&&unread)e.textContent=unread>99?"99+":unread;}
+
 function escapeHtml(value){
   return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 }
@@ -40,9 +64,9 @@ async function init(){
   $("welcomeText").textContent="Welcome back, "+display+". Here’s what’s happening in your inbox.";
   $("profileBtn").textContent=initials(display);
   $("profileBtn").title=display+" · "+(user.email||"");
-  $("connectionLabel").textContent="Profile ready";
-  $("connectionLabel").style.color="#6ee7b7";
+
   if(profile.theme==="light")document.body.classList.add("light-theme");
+  renderSidebar();
   await loadMail("INBOX");
   if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 }
@@ -58,7 +82,7 @@ async function loadMail(folder=currentFolder){
   $("mailList").innerHTML="";
   const titleMap={INBOX:"Inbox",STARRED:"Starred",SENT:"Sent",DRAFTS:"Drafts",TRASH:"Trash"};
   $("pageTitle").textContent=titleMap[folder]||"Inbox";
-  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.folder===folder));
+  updateSidebarActive();
   try{
     const res=await fetch(APP_CONFIG.API_BASE_URL+"/api/mail?folder="+encodeURIComponent(folder),{headers:await authHeaders()});
     if(res.status===401){await supabase.auth.signOut();location.replace("./auth.html");return}
@@ -69,6 +93,7 @@ async function loadMail(folder=currentFolder){
     $("connectionLabel").textContent="Connected";
     $("connectionLabel").style.color="#6ee7b7";
     renderMessages();
+    updateSidebarCounts();
     setStatus("");
   }catch(error){
     console.warn("Mail backend unavailable",error);
@@ -79,6 +104,7 @@ async function loadMail(folder=currentFolder){
     $("connectionLabel").style.color="#ffad72";
     setStatus("Your account is ready.");
     $("resultCount").textContent="0 messages";
+    updateSidebarCounts();
     const emptyBtn=$("emptyComposeBtn");if(emptyBtn)emptyBtn.onclick=()=>openCompose();
   }
 }
@@ -124,7 +150,6 @@ $("selectAll").onchange=()=>{
 $("markReadBtn").onclick=()=>messageAction("read",{ids:[...selectedIds]});
 $("deleteBtn").onclick=()=>messageAction("delete",{ids:[...selectedIds]});
 $("logoutBtn").onclick=async()=>{await supabase.auth.signOut();location.replace("./index.html")};
-document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{$("sidebar").classList.remove("open");loadMail(b.dataset.folder)});
 $("saveDraftBtn").onclick=()=>toast("Draft saving will be available when the mail backend is connected.");
 $("composeForm").onsubmit=async e=>{
   e.preventDefault();
