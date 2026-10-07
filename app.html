@@ -1,1 +1,50 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#07111f"><title>Game API Mail</title><link rel="manifest" href="./manifest.json"><link rel="stylesheet" href="./css/app.css"></head><body><header class="topbar"><a class="brand" href="./index.html"><span class="brand-mark">G</span><span>Game API Mail</span></a><button id="logoutBtn" class="ghost">Sign out</button></header><main class="layout"><aside class="sidebar"><button id="composeBtn" class="compose">Compose</button><nav><button class="nav-item active" data-folder="INBOX">Inbox <span id="inboxCount"></span></button><button class="nav-item" data-folder="STARRED">Starred</button><button class="nav-item" data-folder="SENT">Sent</button><button class="nav-item" data-folder="DRAFTS">Drafts</button><button class="nav-item" data-folder="TRASH">Trash</button></nav></aside><section class="mail-area"><div class="toolbar"><input id="searchInput" type="search" placeholder="Search mail"><button id="refreshBtn" class="ghost">Refresh</button></div><div id="status" class="status"></div><div id="mailList" class="mail-list"></div></section></main><dialog id="composeDialog"><form id="composeForm" method="dialog" class="compose-card"><div class="dialog-head"><h2>New message</h2><button type="button" id="closeCompose" class="icon">×</button></div><input id="toInput" type="email" placeholder="To" required><input id="subjectInput" type="text" placeholder="Subject"><textarea id="bodyInput" placeholder="Write your message..." required></textarea><div class="compose-actions"><button type="button" id="saveDraftBtn" class="ghost">Save draft</button><button type="submit" class="send">Send</button></div></form></dialog><script type="module" src="./js/app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06101d">
+<meta name="description" content="Your Game API Mail inbox.">
+<title>Inbox — Game API Mail</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./css/app.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    <a class="brand" href="./app.html" aria-label="Game API Mail inbox"><span class="brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span><span>Game API <strong>Mail</strong></span></a>
+    <label class="global-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input id="searchInput" type="search" placeholder="Search mail" autocomplete="off"><kbd>⌘ K</kbd></label>
+    <div class="top-actions"><button class="top-icon" id="helpBtn" aria-label="Help" title="Help">?</button><button class="top-icon" id="refreshBtn" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M19 12a7 7 0 1 1-2-5l3 5"/></svg></button><button class="avatar" id="profileBtn" aria-label="Account settings">U</button><button id="logoutBtn" class="logout-btn">Sign out</button></div>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar" id="sidebar">
+      <button id="composeBtn" class="compose"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Compose</span></button>
+      <div class="nav-caption">MAILBOX</div>
+      <nav class="folder-nav">
+        <button class="nav-item active" data-folder="INBOX"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 13h4l2 3h4l2-3h4"/></svg><span>Inbox</span><b id="inboxCount"></b></button>
+        <button class="nav-item" data-folder="STARRED"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg><span>Starred</span></button>
+        <button class="nav-item" data-folder="SENT"><svg viewBox="0 0 24 24"><path d="m21 3-7.2 18-3.7-7.1L3 10.2 21 3Z"/><path d="M10.1 13.9 15 9"/></svg><span>Sent</span></button>
+        <button class="nav-item" data-folder="DRAFTS"><svg viewBox="0 0 24 24"><path d="M4 4h11l5 5v11H4z"/><path d="M14 4v6h6M8 15h8M8 18h6"/></svg><span>Drafts</span></button>
+        <button class="nav-item" data-folder="TRASH"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg><span>Trash</span></button>
+      </nav>
+      <div class="sidebar-bottom"><div class="storage-label"><span>Mailbox status</span><span id="connectionLabel">Ready</span></div><div class="storage-track"><i id="storageBar"></i></div><p>Keep your conversations organized with Game API Mail.</p><button id="settingsBtn" class="settings-link"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.2 2-2 2-2-1.2-.2-.1a7 7 0 0 1-1.4.6L14.7 21h-2.8l-.4-2.6a7 7 0 0 1-1.4-.6l-2.2 1.2-2-2 1.2-2.2a7 7 0 0 1-.6-1.4L4 13v-2.8l2.6-.4a7 7 0 0 1 .6-1.4L6 6.2l2-2 2.2 1.2a7 7 0 0 1 1.4-.6L12 2h2.8l.4 2.6a7 7 0 0 1 1.4.6l2.2-1.2 2 2-1.2 2.2a7 7 0 0 1 .6 1.4l2.6.4v2.8l-2.6.4a7 7 0 0 1-.6 1.4Z"/></svg>Settings & profile</button></div>
+    </aside>
+
+    <main class="main-area">
+      <div class="welcome-row"><div><p class="eyebrow">YOUR MAILBOX</p><h1 id="pageTitle">Inbox</h1><p id="welcomeText">Welcome back. Here’s what’s happening in your inbox.</p></div><div class="welcome-tools"><button class="view-toggle active" aria-label="List view">☷</button><button class="view-toggle" id="compactToggle" aria-label="Toggle compact view">☰</button></div></div>
+      <div class="mail-toolbar"><label class="select-all"><input id="selectAll" type="checkbox" aria-label="Select all messages"><span id="selectionLabel">All messages</span></label><div class="mail-toolbar-actions"><button id="markReadBtn" class="tool-btn" disabled>Mark read</button><button id="deleteBtn" class="tool-btn danger" disabled>Delete</button><span class="result-count" id="resultCount"></span></div></div>
+      <div id="status" class="status" role="status"></div>
+      <section id="mailList" class="mail-list" aria-live="polite"></section>
+      <div class="backend-note" id="backendNote" hidden><span class="note-icon">i</span><div><strong>Your mailbox workspace is ready</strong><p>Connect the Game API Mail backend to start syncing messages through your Hostinger mailbox.</p></div></div>
+      <footer class="app-footer"><span>© Game API Mail</span><span>Private. Organized. Yours.</span></footer>
+    </main>
+  </div>
+</div>
+
+<dialog id="composeDialog" class="compose-dialog"><form id="composeForm" class="compose-card"><div class="dialog-head"><div><p class="eyebrow">NEW MESSAGE</p><h2>Compose email</h2></div><button type="button" id="closeCompose" class="icon-btn" aria-label="Close">×</button></div><label class="compose-field"><span>To</span><input id="toInput" type="email" placeholder="recipient@example.com" required></label><label class="compose-field"><span>Subject</span><input id="subjectInput" type="text" placeholder="Add a subject"></label><label class="compose-field body-field"><span>Message</span><textarea id="bodyInput" placeholder="Write your message..." required></textarea></label><div class="compose-actions"><button type="button" id="saveDraftBtn" class="secondary-btn">Save draft</button><button type="submit" class="send-btn"><svg viewBox="0 0 24 24"><path d="m21 3-7.2 18-3.7-7.1L3 10.2 21 3Z"/></svg>Send message</button></div></form></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
