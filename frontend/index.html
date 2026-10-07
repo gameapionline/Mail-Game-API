@@ -2,47 +2,158 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#1769e0">
-  <title>Game API Mail</title>
-  <link rel="manifest" href="../manifest.json">
-  <link rel="stylesheet" href="./css/app.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Game API Mail — a modern private webmail experience for your domain.">
+  <title>Game API Mail — Your inbox, reimagined</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./css/landing.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand"><span class="brand-mark">G</span><span>Game API Mail</span></div>
-    <button id="logoutBtn" class="ghost">Sign out</button>
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+
+  <header class="site-header">
+    <a class="logo" href="./index.html" aria-label="Game API Mail home">
+      <span class="logo-mark"><span>✉</span></span>
+      <span>Game API <strong>Mail</strong></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#features">Features</a>
+      <a href="#experience">Experience</a>
+      <a href="#security">Security</a>
+    </nav>
+    <a class="header-action" href="./app.html">Open Mail <span>↗</span></a>
   </header>
-  <main class="layout">
-    <aside class="sidebar">
-      <button id="composeBtn" class="compose">Compose</button>
-      <nav>
-        <button class="nav-item active" data-folder="INBOX">Inbox <span id="inboxCount"></span></button>
-        <button class="nav-item" data-folder="STARRED">Starred</button>
-        <button class="nav-item" data-folder="SENT">Sent</button>
-        <button class="nav-item" data-folder="DRAFTS">Drafts</button>
-        <button class="nav-item" data-folder="TRASH">Trash</button>
-      </nav>
-    </aside>
-    <section class="mail-area">
-      <div class="toolbar">
-        <input id="searchInput" type="search" placeholder="Search mail">
-        <button id="refreshBtn" class="ghost">Refresh</button>
+
+  <main>
+    <section class="hero" id="experience">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> Private email, built for the modern web</div>
+        <h1>Your inbox.<br><span>Reimagined.</span></h1>
+        <p class="hero-text">A fast, focused and beautiful mail experience for <strong>game-api.online</strong> — designed to feel effortless on your phone, laptop and tablet.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="./app.html">Open Game API Mail <span>→</span></a>
+          <a class="secondary-button" href="#features">Explore the experience</a>
+        </div>
+        <div class="trust-row">
+          <div class="trust-item"><span>✓</span> Clean workspace</div>
+          <div class="trust-item"><span>✓</span> Multi-device ready</div>
+          <div class="trust-item"><span>✓</span> Your domain</div>
+        </div>
       </div>
-      <div id="status" class="status"></div>
-      <div id="mailList" class="mail-list"></div>
+
+      <div class="mail-scene" aria-label="Preview of the Game API Mail inbox">
+        <div class="scene-orbit orbit-one"></div>
+        <div class="scene-orbit orbit-two"></div>
+        <div class="mail-window">
+          <div class="window-top">
+            <div class="window-brand"><span class="mini-logo">✉</span> Game API Mail</div>
+            <div class="window-dots"><i></i><i></i><i></i></div>
+          </div>
+          <div class="window-body">
+            <aside class="mini-sidebar">
+              <div class="mini-compose">+ Compose</div>
+              <span class="mini-active">▣ Inbox <b>4</b></span>
+              <span>☆ Starred</span>
+              <span>↗ Sent</span>
+              <span>⌑ Drafts</span>
+            </aside>
+            <div class="mini-inbox">
+              <div class="mini-search">⌕ &nbsp; Search mail</div>
+              <div class="mail-card unread-card">
+                <div class="avatar avatar-blue">G</div>
+                <div><b>Game API Team</b><span>Welcome to your new inbox</span></div>
+                <time>09:42</time>
+              </div>
+              <div class="mail-card">
+                <div class="avatar avatar-purple">D</div>
+                <div><b>Domain Services</b><span>Your mail service is ready</span></div>
+                <time>08:18</time>
+              </div>
+              <div class="mail-card">
+                <div class="avatar avatar-green">A</div>
+                <div><b>Account Activity</b><span>New sign-in notification</span></div>
+                <time>Yesterday</time>
+              </div>
+              <div class="mail-card">
+                <div class="avatar avatar-orange">M</div>
+                <div><b>Marketing</b><span>Your weekly updates</span></div>
+                <time>Mon</time>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="floating-chip chip-secure"><span>●</span> Private & protected</div>
+        <div class="floating-chip chip-sync"><span>↻</span> Synced everywhere</div>
+      </div>
+    </section>
+
+    <section class="feature-section" id="features">
+      <div class="section-heading">
+        <span class="section-label">THE EXPERIENCE</span>
+        <h2>Everything you need.<br><span>Nothing in the way.</span></h2>
+        <p>Game API Mail keeps the important things close and the clutter out of your way.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card large">
+          <div class="feature-icon blue">⌕</div>
+          <h3>Find mail in seconds</h3>
+          <p>Search-focused navigation makes your inbox feel simple, even when it gets busy.</p>
+          <div class="fake-search"><span>⌕</span> Search messages, people and subjects <kbd>/</kbd></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon purple">✦</div>
+          <h3>Made for your domain</h3>
+          <p>Send and receive from your own professional Game API Mail address.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon green">↗</div>
+          <h3>Ready anywhere</h3>
+          <p>Designed responsively for desktop, tablet and mobile screens.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="security-section" id="security">
+      <div class="security-card">
+        <div>
+          <span class="section-label">BUILT WITH CARE</span>
+          <h2>Your mail should feel <span>personal.</span></h2>
+          <p>The web interface is only the beginning. The service is designed around secure authentication, your domain and a dedicated mail infrastructure.</p>
+        </div>
+        <div class="security-points">
+          <div><b>01</b><span>Private account access</span></div>
+          <div><b>02</b><span>Responsive web experience</span></div>
+          <div><b>03</b><span>Notification-ready PWA</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="cta-glow"></div>
+      <span class="section-label">READY WHEN YOU ARE</span>
+      <h2>Welcome to your<br><span>new inbox.</span></h2>
+      <p>Open Game API Mail and step into a cleaner way to handle email.</p>
+      <a class="primary-button" href="./app.html">Open Game API Mail <span>→</span></a>
     </section>
   </main>
-  <dialog id="composeDialog">
-    <form id="composeForm" method="dialog" class="compose-card">
-      <div class="dialog-head"><h2>New message</h2><button type="button" id="closeCompose" class="icon">×</button></div>
-      <input id="toInput" type="email" placeholder="To" required>
-      <input id="subjectInput" type="text" placeholder="Subject">
-      <textarea id="bodyInput" placeholder="Write your message..." required></textarea>
-      <div class="compose-actions"><button type="button" id="saveDraftBtn" class="ghost">Save draft</button><button type="submit" class="send">Send</button></div>
-    </form>
-  </dialog>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script type="module" src="./js/app.js"></script>
+
+  <footer>
+    <div class="footer-brand"><span class="logo-mark small"><span>✉</span></span> Game API Mail</div>
+    <span>© 2026 Game API Online. All rights reserved.</span>
+    <a href="mailto:mail@game-api.online">mail@game-api.online</a>
+  </footer>
+
+  <script>
+    const header = document.querySelector(".site-header");
+    window.addEventListener("scroll", () => header.classList.toggle("scrolled", window.scrollY > 24));
+    const reveal = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".feature-card,.security-card,.section-heading,.cta-section").forEach(el => reveal.observe(el));
+  </script>
 </body>
 </html>
