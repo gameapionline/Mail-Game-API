@@ -123,6 +123,76 @@ function emptyState(folder){
   const copy=folder==="INBOX"?"When someone emails your Game API Mail address, the message will appear here.":folder==="STARRED"?"Star important messages to find them quickly here.":folder==="SENT"?"Messages you send will be listed here.":folder==="DRAFTS"?"Save a draft and come back to it whenever you're ready.":"Deleted messages will appear here while they're in Trash.";
   return `<div class="mail-empty"><div class="empty-art"><svg viewBox="0 0 48 48"><rect x="6" y="11" width="36" height="26" rx="5"/><path d="m8 14 16 12 16-12M7 34l11-10M41 34 30 24"/></svg></div><h2>${title}</h2><p>${copy}</p>${folder==="INBOX"?'<button class="empty-compose" id="emptyComposeBtn">Compose your first email</button>':""}</div>`;
 }
+async function loadMailbox(){
+  const addressEl=$("mailboxAddress");
+  const statusEl=$("mailboxConnection");
+  const setupLink=$("mailboxSetupLink");
+  const note=$("backendNote");
+  const noteTitle=$("backendNoteTitle");
+  const noteText=$("backendNoteText");
+  const connectionLabel=$("connectionLabel");
+
+  if(addressEl)addressEl.textContent="Checking mailbox…";
+  if(statusEl){
+    statusEl.className="mailbox-connection pending";
+    statusEl.innerHTML="<i></i> Checking connection…";
+  }
+  if(setupLink)setupLink.hidden=true;
+
+  try{
+    const res=await fetch(APP_CONFIG.API_BASE_URL+"/api/mailbox",{headers:await authHeaders()});
+    const data=await res.json().catch(()=>({}));
+
+    if(res.status===401){
+      await supabase.auth.signOut();
+      location.replace("./auth.html");
+      return false;
+    }
+
+    if(!res.ok){
+      const message=data?.error||data?.message||"Mailbox is not connected.";
+      const error=new Error(message);
+      error.status=res.status;
+      error.code=data?.code||null;
+      throw error;
+    }
+
+    const mailbox=data?.mailbox;
+    const address=String(mailbox?.email||mailbox?.email_address||"").trim();
+    if(!address)throw new Error("Your mailbox was not returned by the mail backend.");
+
+    if(addressEl)addressEl.textContent=address;
+    if(statusEl){
+      statusEl.className="mailbox-connection connected";
+      statusEl.innerHTML="<i></i> Mailbox connected";
+    }
+    if(connectionLabel){
+      connectionLabel.textContent="Connected";
+      connectionLabel.style.color="#6ee7b7";
+    }
+    if(note)note.hidden=true;
+    return true;
+  }catch(error){
+    console.error("Mailbox connection check failed:",error);
+    if(addressEl)addressEl.textContent=profile?.mail_username?profile.mail_username+"@game-api.online":"Mailbox not created";
+    if(statusEl){
+      statusEl.className="mailbox-connection disconnected";
+      statusEl.innerHTML="<i></i> "+escapeHtml(error.message||"Mailbox not connected");
+    }
+    if(connectionLabel){
+      connectionLabel.textContent="Not connected";
+      connectionLabel.style.color="#ff8b86";
+    }
+    if(note){
+      note.hidden=false;
+      if(noteTitle)noteTitle.textContent="Your Game API Mailbox is not connected";
+      if(noteText)noteText.textContent=error.message||"Finish setup to create your @game-api.online mailbox.";
+    }
+    if(setupLink)setupLink.hidden=false;
+    return false;
+  }
+}
+
 async function loadMail(folder=currentFolder){
   currentFolder=folder;
   selectedIds.clear();updateSelectionUi();
