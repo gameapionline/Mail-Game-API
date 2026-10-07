@@ -23,7 +23,23 @@
 
     <main class="main-area">
       <div class="welcome-row"><div><p class="eyebrow">YOUR MAILBOX</p><h1 id="pageTitle">Inbox</h1><p id="welcomeText">Welcome back. Here’s what’s happening in your inbox.</p></div><div class="welcome-tools"><button class="view-toggle active" aria-label="List view">☷</button><button class="view-toggle" id="compactToggle" aria-label="Toggle compact view">☰</button></div></div>
-      <div class="mail-toolbar"><label class="select-all"><input id="selectAll" type="checkbox" aria-label="Select all messages"><span id="selectionLabel">All messages</span></label><div class="mail-toolbar-actions"><button id="markReadBtn" class="tool-btn" disabled>Mark read</button><button id="deleteBtn" class="tool-btn danger" disabled>Delete</button><span class="result-count" id="resultCount"></span></div></div>
+      <section id="mailboxIdentity" class="mailbox-identity" aria-live="polite">
+  <div class="mailbox-icon">✉</div>
+  <div class="mailbox-copy">
+    <p class="eyebrow">GAME API MAIL ADDRESS</p>
+    <strong id="mailboxAddress">Checking mailbox…</strong>
+    <span id="mailboxSignIn">Sign-in account: checking…</span>
+  </div>
+  <div id="mailboxConnection" class="mailbox-connection checking"><i></i><span>Checking connection…</span></div>
+</section>
+<style>
+.mailbox-identity{display:flex;align-items:center;gap:14px;margin:0 0 18px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+.mailbox-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:rgba(92,157,255,.1);color:var(--blue2);font-size:19px;flex:none}
+.mailbox-copy{min-width:0;flex:1}.mailbox-copy .eyebrow{margin-bottom:4px}.mailbox-copy strong{display:block;font-size:13px;color:#edf5ff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mailbox-copy span{display:block;margin-top:4px;color:var(--muted);font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mailbox-connection{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:800;white-space:nowrap}.mailbox-connection i{width:7px;height:7px;border-radius:50%;background:currentColor}.mailbox-connection.connected{color:var(--green)}.mailbox-connection.disconnected{color:var(--danger)}.mailbox-connection.checking{color:#f2c66d}
+@media(max-width:600px){.mailbox-identity{align-items:flex-start;flex-wrap:wrap}.mailbox-connection{margin-left:54px;margin-top:-8px}}
+</style>
+<div class="mail-toolbar"><label class="select-all"><input id="selectAll" type="checkbox" aria-label="Select all messages"><span id="selectionLabel">All messages</span></label><div class="mail-toolbar-actions"><button id="markReadBtn" class="tool-btn" disabled>Mark read</button><button id="deleteBtn" class="tool-btn danger" disabled>Delete</button><span class="result-count" id="resultCount"></span></div></div>
       <div id="status" class="status" role="status"></div>
       <section id="mailList" class="mail-list" aria-live="polite"></section>
       <div class="backend-note" id="backendNote" hidden><span class="note-icon">i</span><div><strong>Your mailbox workspace is ready</strong><p>Connect the Game API Mail backend to start syncing messages through your Hostinger mailbox.</p></div></div>
