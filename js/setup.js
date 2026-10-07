@@ -50,9 +50,11 @@ function collectStep(){
   if(currentStep===2){
     const phone=$("phone").value.trim();
     const recovery=$("recoveryEmail").value.trim().toLowerCase();
+    const country=$("country").value;
+    if(!country){showMessage("Please select your country.");return null}
     if(recovery && !validEmail(recovery)){showMessage("Enter a valid recovery email or leave it empty.");return null}
     if(recovery && recovery===user.email.toLowerCase()){showMessage("Your recovery email should be different from your sign-in email.");return null}
-    return {phone:phone||null,recovery_email:recovery||null,country:$("country").value||null};
+    return {phone:phone||null,recovery_email:recovery||null,country};
   }
   if(currentStep===3){
     const username=normalizeUsername($("mailUsername").value);
@@ -123,8 +125,12 @@ else{
   user=currentUser;
   try{
     await loadProfile();
-    if(profile.profile_completed){location.replace("./app.html");}
-    else showStep(1);
+    if(profile.profile_completed){
+      location.replace("./app.html");
+    }else{
+      const resumeStep=profile.mail_username?4:((profile.phone||profile.recovery_email||profile.country)?3:(profile.first_name||profile.last_name||profile.display_name?2:1));
+      showStep(resumeStep);
+    }
   }catch(error){
     showMessage("We could not load your account profile. Please refresh and try again.");
   }
