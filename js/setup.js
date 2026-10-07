@@ -148,8 +148,8 @@ $("nextBtn").onclick=async()=>{
       try{
         const result=await provisionMailbox();
         const mailbox=result?.mailbox;
-        if(mailbox?.email_address){
-          $("nextBtn").textContent="Mailbox created";
+        if(mailbox?.email){
+          $("nextBtn").textContent="Mailbox created: "+mailbox.email;
         }
       }catch(error){
         console.error("Mailbox provisioning failed:",error);
