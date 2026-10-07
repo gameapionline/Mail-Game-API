@@ -8,6 +8,7 @@ let currentFolder="INBOX";
 let allMessages=[];
 let selectedIds=new Set();
 let toastTimer=null;
+let mailbox=null;
 
 const SIDEBAR_ITEMS=[
  {folder:"INBOX",label:"Inbox",className:"inbox",icon:`<svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 13h4l2 3h4l2-3h4"/></svg>`},
@@ -55,6 +56,52 @@ async function authHeaders(){
   const {data}=await supabase.auth.getSession();
   return {Authorization:"Bearer "+(data.session?.access_token||"")};
 }
+function setMailboxConnection(state,label){
+  const el=$("mailboxConnection");
+  const side=$("connectionLabel");
+  if(el){
+    el.className="mailbox-connection "+state;
+    const span=el.querySelector("span");
+    if(span)span.textContent=label;
+  }
+  if(side){
+    side.textContent=label;
+    side.style.color=state==="connected"?"#6ee7b7":state==="disconnected"?"#ff8b86":"#f2c66d";
+  }
+}
+async function loadMailbox(){
+  setMailboxConnection("checking","Checking connection…");
+  try{
+    const res=await fetch(APP_CONFIG.API_BASE_URL+"/api/mailbox",{headers:await authHeaders()});
+    if(res.status===401){await supabase.auth.signOut();location.replace("./auth.html");return false}
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){
+      const error=new Error(data?.error||data?.message||"Mailbox is not connected.");
+      error.status=res.status;
+      throw error;
+    }
+    mailbox=data?.mailbox||null;
+    if(!mailbox?.email)throw new Error("Your Game API Mail address has not been provisioned yet.");
+    $("mailboxAddress").textContent=mailbox.email;
+    $("mailboxSignIn").textContent="Sign-in account: "+(user?.email||"");
+    setMailboxConnection("connected","Connected");
+    $("backendNote").hidden=true;
+    return true;
+  }catch(error){
+    mailbox=null;
+    $("mailboxAddress").textContent="Mailbox not connected";
+    $("mailboxSignIn").textContent="Sign-in account: "+(user?.email||"");
+    setMailboxConnection("disconnected","Not connected");
+    const note=$("backendNote");
+    if(note){
+      note.hidden=false;
+      note.querySelector("strong").textContent="Mailbox connection needed";
+      note.querySelector("p").textContent=(error.message||"Your Game API Mail address could not be loaded.")+" Open Settings & profile to finish mailbox setup.";
+    }
+    console.warn("Mailbox status:",error);
+    return false;
+  }
+}
 async function init(){
   const {data,error}=await supabase.auth.getUser();
   if(error||!data.user){location.replace("./auth.html");return}
@@ -67,6 +114,7 @@ async function init(){
 
   if(profile.theme==="light")document.body.classList.add("light-theme");
   renderSidebar();
+  await loadMailbox();
   await loadMail("INBOX");
   if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 }
@@ -86,12 +134,14 @@ async function loadMail(folder=currentFolder){
   try{
     const res=await fetch(APP_CONFIG.API_BASE_URL+"/api/mail?folder="+encodeURIComponent(folder),{headers:await authHeaders()});
     if(res.status===401){await supabase.auth.signOut();location.replace("./auth.html");return}
-    if(!res.ok)throw new Error("backend");
+    if(!res.ok){
+      const body=await res.json().catch(()=>({}));
+      throw new Error(body?.error||body?.message||("Mail backend returned HTTP "+res.status));
+    }
     const data=await res.json();
     allMessages=Array.isArray(data.messages)?data.messages:[];
     $("backendNote").hidden=true;
-    $("connectionLabel").textContent="Connected";
-    $("connectionLabel").style.color="#6ee7b7";
+    setMailboxConnection("connected","Connected");
     renderMessages();
     updateSidebarCounts();
     setStatus("");
@@ -100,9 +150,8 @@ async function loadMail(folder=currentFolder){
     allMessages=[];
     $("mailList").innerHTML=emptyState(folder);
     const note=$("backendNote");note.hidden=false;
-    $("connectionLabel").textContent="Backend pending";
-    $("connectionLabel").style.color="#ffad72";
-    setStatus("Your account is ready.");
+    setMailboxConnection("disconnected","Not connected");
+    setStatus(error.message||"Your mailbox could not be loaded.");
     $("resultCount").textContent="0 messages";
     updateSidebarCounts();
     const emptyBtn=$("emptyComposeBtn");if(emptyBtn)emptyBtn.onclick=()=>openCompose();
