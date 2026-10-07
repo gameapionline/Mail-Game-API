@@ -1,33 +1,37 @@
 # Game API Mail
 
-Frontend for **Game API Mail**, the webmail experience for `game-api.online`.
+Frontend-only webmail interface for `game-api.online`.
 
-## Frontend-only architecture
+## Structure
 
-This repository contains only the browser application.
+- `index.html` — public animated landing page
+- `app.html` — mail workspace
+- `css/` — landing and app styles
+- `js/` — Supabase client and frontend logic
+- `manifest.json` — PWA manifest
+- `sw.js` — service worker foundation
 
-- `frontend/index.html` — public animated landing page
-- `frontend/app.html` — authenticated mail workspace
-- `frontend/css/` — application and landing-page styles
-- `frontend/js/` — Supabase client and frontend logic
-- `frontend/sw.js` — service worker / notification foundation
-- `frontend/manifest.json` — PWA manifest
+## Render Static Site
 
-The mail backend is intentionally kept separate and will be deployed as its own Render Web Service.
+Deploy this repository as a **Render Static Site**.
 
-## Render deployment
+Use the repository root as the publish directory. Do not use `/frontend`.
 
-Create a **Static Site** for this repository and set the publish directory to:
+The Render deployment URL will open the landing page directly:
 
-`frontend`
+`https://your-render-site.onrender.com/`
 
-There is no Node.js build step for this repository.
+That URL serves `index.html` automatically. There is no `/frontend/index.html` in the deployment path.
+
+## Separate backend
+
+The mail backend remains a separate Render Web Service. The frontend will call the backend through `API_BASE_URL` after the backend domain is ready.
+
+Planned domains:
+
+- Webmail: `mail.game-api.online`
+- API: `api.game-api.online`
 
 ## Security
 
-Only the Supabase publishable key belongs in the frontend. Never place the Supabase service-role key, Hostinger SMTP/IMAP password, VAPID private key, or other server credentials in this repository.
-
-## Planned domains
-
-- Frontend: `mail.game-api.online`
-- Backend API: `api.game-api.online`
+Only the Supabase publishable key belongs in the browser. Never put the Supabase service-role key, Hostinger SMTP/IMAP password, VAPID private key, or other server credentials in this repository.
