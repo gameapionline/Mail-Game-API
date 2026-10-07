@@ -103,8 +103,8 @@ $("signupForm").addEventListener("submit",async e=>{
   setLoading(false);
   if(error){showMessage(friendlyError(error));return}
   if(data.session){setSessionRedirect(data.session);return}
-  showMessage("Account created. Check your email for the confirmation link, then return here to sign in.","success");
   showLogin();
+  showMessage("Account created. Check your email for the confirmation link, then return here to sign in.","success");
 });
 
 $("forgotPassword").onclick=async()=>{
