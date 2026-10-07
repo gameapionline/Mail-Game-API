@@ -33,6 +33,24 @@
 </div>
 
 <dialog id="composeDialog" class="compose-dialog"><form id="composeForm" class="compose-card"><div class="dialog-head"><div><p class="eyebrow">NEW MESSAGE</p><h2>Compose email</h2></div><button type="button" id="closeCompose" class="icon-btn" aria-label="Close">×</button></div><label class="compose-field"><span>To</span><input id="toInput" type="email" placeholder="recipient@example.com" required></label><label class="compose-field"><span>Subject</span><input id="subjectInput" type="text" placeholder="Add a subject"></label><label class="compose-field body-field"><span>Message</span><textarea id="bodyInput" placeholder="Write your message..." required></textarea></label><div class="compose-actions"><button type="button" id="saveDraftBtn" class="secondary-btn">Save draft</button><button type="submit" class="send-btn"><svg viewBox="0 0 24 24"><path d="m21 3-7.2 18-3.7-7.1L3 10.2 21 3Z"/></svg>Send message</button></div></form></dialog>
+
+<dialog id="messageDialog" class="message-dialog">
+  <div class="message-card">
+    <div class="dialog-head">
+      <div>
+        <p class="eyebrow">MESSAGE</p>
+        <h2 id="messageDialogTitle">Message</h2>
+        <p id="messageDialogMeta" class="message-meta"></p>
+      </div>
+      <button type="button" id="closeMessageDialog" class="icon-btn" aria-label="Close">×</button>
+    </div>
+    <div id="messageDialogBody" class="message-body"></div>
+    <div class="message-dialog-actions">
+      <button type="button" id="replyMessageBtn" class="secondary-btn">Reply</button>
+      <button type="button" id="closeMessageDialogBottom" class="send-btn">Close</button>
+    </div>
+  </div>
+</dialog>
 <div id="toast" class="toast" role="status" hidden></div>
 <script type="module" src="./js/app.js"></script>
 </body>
